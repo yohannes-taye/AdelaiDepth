@@ -30,6 +30,8 @@ def parse_args():
     parser.add_argument('--img_folder', default='./data/depth_test', help='Folder path to load')
     parser.add_argument('--save_folder', default='./data/output_folder', help='Folder path to save')
     parser.add_argument('--debug', action='store_true', help='debug mode', default=False)
+    parser.add_argument('--trained_ckpt', help='Folder path to checkpoint', default='./res50.pth')
+
 
     parser = add_create_video_args(parser)
 
@@ -150,8 +152,11 @@ if __name__ == '__main__':
         # cv2.imwrite(os.path.join(image_dir_out, img_name), rgb)
         # save depth
         # plt.imsave(os.path.join(image_dir_out, img_name[:-4]+'-depth.png'), pred_depth_ori, cmap='rainbow')
-        cv2.imwrite(os.path.join(args.save_folder, img_name[:-4]+'.png'), (pred_depth_ori/pred_depth_ori.max() * 60000).astype(np.uint16))
-
+        
+        
+        depth_img = (pred_depth_ori/pred_depth_ori.max() * 60000)
+        cv2.imwrite(os.path.join(args.save_folder, img_name[:-4]+'.png'), depth_img.astype(np.uint16))
+        #LALI_DEBUG HERE2
     if args.create_video:
         create_video(args.save_folder, args.save_folder, args.video_name, args.fps)
         

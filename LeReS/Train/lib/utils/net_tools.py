@@ -41,7 +41,8 @@ def load_ckpt(args, model, optimizer=None, scheduler=None, val_err=[]):
         logger.info("loading checkpoint %s", args.load_ckpt)
         checkpoint = torch.load(args.load_ckpt, map_location=lambda storage, loc: storage, pickle_module=dill)
         model_state_dict_keys = model.state_dict().keys()
-        checkpoint_state_dict_noprefix = strip_prefix_if_present(checkpoint['model_state_dict'], "module.")
+        # checkpoint_state_dict_noprefix = strip_prefix_if_present(checkpoint['model_state_dict'], "module.")
+        checkpoint_state_dict_noprefix = strip_prefix_if_present(checkpoint['depth_model'], "module.")
 
         if all(key.startswith('module.') for key in model_state_dict_keys):
             model.module.load_state_dict(checkpoint_state_dict_noprefix)

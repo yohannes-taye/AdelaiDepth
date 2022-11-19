@@ -13,7 +13,7 @@ from lib.configs.config import cfg
 from lib.utils.logging import log_stats
 from lib.utils.logging import SmoothedValue
 from lib.utils.timer import Timer
-
+import numpy as np
 
 
 class TrainingStats(object):
@@ -61,6 +61,24 @@ class TrainingStats(object):
             log_stats(stats, self.args)
             if self.tblogger:
                 self.tb_log_stats(stats, cur_iter)
+
+    # Function to log images to tensorboard
+    def tb_log_images(self, step, inference):
+        """Log images to tensorboard"""
+        # depth = inference['pred_depth'] / (inference['pred_depth'].max())
+        depth = inference['pred_depth'].cpu().numpy().squeeze()
+        depth = (depth/depth.max() * 60000)
+        depth = depth.astype(np.uint16)
+        
+        #Reshape depth to (1, H, W)
+        depth = np.reshape(depth, (len(depth), 1, depth.shape[1], depth.shape[2]))
+
+        self.tblogger.add_images(f"Depth Inference", depth, step)
+
+        #LALI_DEBUG HERE1
+        # print('Not implemented yet')
+        
+
 
     def tb_log_stats(self, stats, cur_iter):
         """Log the tracked statistics to tensorboard"""

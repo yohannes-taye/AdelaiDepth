@@ -134,6 +134,7 @@ def do_train(train_dataloader, val_dataloader, train_args,
                 training_stats.UpdateIterStats(loss_dict_reduced)
                 training_stats.IterToc()
                 training_stats.LogIterStats(step, epoch, optimizer.optimizer, val_err[0])
+                training_stats.tb_log_images(step, model.module.inference(data))
 
             # validate the model
             if step % cfg.TRAIN.VAL_STEP == 0 and val_dataloader is not None and step != 0:
@@ -243,7 +244,7 @@ def main_worker(local_rank: int, ngpus_per_node: int, train_args, val_args):
              val_err,
              logger,
              tblogger)
-
+ 
 def main():
     # Train args
     train_opt = TrainOptions()

@@ -65,7 +65,22 @@ class ModelLoss(nn.Module):
 
         self.ranking_edge_auxiloss = EdgeguidedRankingLoss(mask_value=-1e-8)
 
+
+    #LALI_DEBUG: I have made the changes to the function below by replacing it with the
+    #function that returns a modiied loss without counting auxi_loss. 
+    
     def criterion(self, pred_logit, auxi, data):
+        loss1 = self.decoder_loss(pred_logit, data)
+        # loss2 = self.auxi_loss(auxi, data)
+        loss = {}
+        loss.update(loss1)
+        # loss.update(loss2)
+        loss['total_loss'] = loss1['total_loss'] #+ loss2['total_loss']
+        return loss
+
+
+    #LALI_DEBUG: this is the original function. 
+    def _criterion(self, pred_logit, auxi, data):
         loss1 = self.decoder_loss(pred_logit, data)
         loss2 = self.auxi_loss(auxi, data)
         loss = {}
@@ -74,7 +89,15 @@ class ModelLoss(nn.Module):
         loss['total_loss'] = loss1['total_loss'] + loss2['total_loss']
         return loss
 
-    def auxi_loss(self, auxi, data):
+
+
+    #LALI_DEBUG: I have made the changes to the function below by replacing it 
+    #with a function that returns 0 for loss.
+    def auxi_loss(self, auxi, data): 
+        return 0 
+    
+    #LALI_DEBUG: This is the original function 
+    def _auxi_loss(self, auxi, data):
         loss = {}
         if 'disp' not in data:
             return {'total_loss': torch.tensor(0.0).cuda()}
@@ -219,13 +242,17 @@ class DepthModel(nn.Module):
         backbone = network.__name__.split('.')[-1] + '.' + cfg.MODEL.ENCODER
         self.encoder_modules = get_func(backbone)()
         self.decoder_modules = network.Decoder()
-        self.auxi_modules = network.AuxiNetV2()
-
+        # self.auxi_modules = network.AuxiNetV2()
+        # LALI_DEBUG: I made modificaions here by commeting out the line above.
     def forward(self, x):
         lateral_out = self.encoder_modules(x)
         out_logit, auxi_input = self.decoder_modules(lateral_out)
-        out_auxi = self.auxi_modules(auxi_input)
-        return out_logit, out_auxi
+        # out_auxi = self.auxi_modules(auxi_input)
+        # LALI_DEBUG: I made modificaions here by commeting out the line above.
+
+        return out_logit, None
+        # LALI_DEBUG: I made modificaions here by commeting out the line above.
+        
 
 
 def recover_scale_shift_depth(pred, gt, min_threshold=1e-8, max_threshold=1e8):

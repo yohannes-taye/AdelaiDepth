@@ -2,7 +2,7 @@
 *.pth
 *output*
 LeReS/Minist_Test/test_images/
-LeReS/Train/datasets/DiverseDepth/
-LeReS/Train/datasets/taskonomy/
+LeReS/Train/datasets
 
 
+LeReS/Train/HRWSI.zip
