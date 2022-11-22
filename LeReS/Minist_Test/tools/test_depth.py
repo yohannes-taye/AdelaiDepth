@@ -20,8 +20,6 @@ def add_create_video_args(parser):
     parser.add_argument('--fps', default=30, help='video fps')
     return parser
 
-
-
 def parse_args():
     parser = argparse.ArgumentParser(
         description='Configs for LeReS')
@@ -30,8 +28,9 @@ def parse_args():
     parser.add_argument('--img_folder', default='./data/depth_test', help='Folder path to load')
     parser.add_argument('--save_folder', default='./data/output_folder', help='Folder path to save')
     parser.add_argument('--debug', action='store_true', help='debug mode', default=False)
-    parser.add_argument('--trained_ckpt', help='Folder path to checkpoint', default='./res50.pth')
+    parser.add_argument('--stich_with_rgb', action='store_true', help='debug mode', default=False)
 
+    parser.add_argument('--trained_ckpt', help='Folder path to checkpoint', default='./res50.pth')
 
     parser = add_create_video_args(parser)
 
@@ -90,13 +89,10 @@ if __name__ == '__main__':
         print('Input folder is empty!')
         exit()
 
-    # Clear save folder
-    for file in os.listdir(args.save_folder):
-        os.remove(os.path.join(args.save_folder, file))
+   
 
     #If debug mode, wait for debugger to attach
     if args.debug:
-        args = parse_args()
         debugpy.listen(5678)
         print("Press play!")
         debugpy.wait_for_client()
@@ -110,14 +106,11 @@ if __name__ == '__main__':
     load_ckpt(args, depth_model, None, None)
     depth_model.cuda()
 
-
     # load images
     imgs_list = os.listdir(args.img_folder)
     # image_dir = os.path.dirname(os.path.dirname(__file__)) + '/test_images/'
     # imgs_list = os.listdir(image_dir)
     imgs_list.sort()
-
-
 
     # If debug mode, only process 10 images
     if args.debug:
@@ -153,10 +146,27 @@ if __name__ == '__main__':
         # save depth
         # plt.imsave(os.path.join(image_dir_out, img_name[:-4]+'-depth.png'), pred_depth_ori, cmap='rainbow')
         
-        
         depth_img = (pred_depth_ori/pred_depth_ori.max() * 60000)
-        cv2.imwrite(os.path.join(args.save_folder, img_name[:-4]+'.png'), depth_img.astype(np.uint16))
-        #LALI_DEBUG HERE2
+
+        if args.stich_with_rgb:
+            depth_img = (depth_img/depth_img.max())*256
+            depth = depth_img
+            # depth = depth_img.astype(np.uint16) 
+            
+            #Normalize depth image and multiply by 256 
+            # depth = (depth/depth.max())*256
+
+            #Convert rgb to gray scale 
+            # rgb = cv2.cvtColor(rgb, cv2.COLOR_BGR2GRAY)
+            depth = cv2.cvtColor(depth, cv2.COLOR_GRAY2RGB)
+
+            #Stich horizontally with rgb image
+            depth = np.concatenate((rgb, depth), axis=1)
+            cv2.imwrite(os.path.join(args.save_folder, img_name[:-4]+'.png'), depth)
+        else:   
+            cv2.imwrite(os.path.join(args.save_folder, img_name[:-4]+'.png'), depth_img.astype(np.uint16))
+        #LALI_DEBUG HERE2``
+    
     if args.create_video:
         create_video(args.save_folder, args.save_folder, args.video_name, args.fps)
         

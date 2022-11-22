@@ -15,15 +15,11 @@ python ../tools/train.py \
     --epoch 50 \
     --lr_scheduler_multiepochs 10 25 40 \
     --val_step 5000 \
-    --snapshot_iters 5000 \
+    --snapshot_iters 1 \
     --log_interval 1 \
     --load_ckpt /home/tmc/project/AdelaiDepth/LeReS/Minist_Test/res50.pth \
     # --resume 
-    
-
-
-
-
+     
 # python ../tools/train.py \
 # --dataroot datasets \
 # --backbone resnet50 \

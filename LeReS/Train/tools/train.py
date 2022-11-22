@@ -6,7 +6,7 @@ import os.path as osp
 import json
 import torch.distributed as dist
 import torch.multiprocessing as mp
-
+import debugpy 
 from multiprocessing.sharedctypes import Value
 from data.load_dataset_distributed import MultipleDataLoaderDistributed
 from lib.models.multi_depth_model_auxiv2 import *
@@ -134,7 +134,7 @@ def do_train(train_dataloader, val_dataloader, train_args,
                 training_stats.UpdateIterStats(loss_dict_reduced)
                 training_stats.IterToc()
                 training_stats.LogIterStats(step, epoch, optimizer.optimizer, val_err[0])
-                training_stats.tb_log_images(step, model.module.inference(data))
+                # training_stats.tb_log_images(step, model.module.inference(data))
 
             # validate the model
             if step % cfg.TRAIN.VAL_STEP == 0 and val_dataloader is not None and step != 0:
@@ -288,4 +288,8 @@ def main():
 
 
 if __name__=='__main__':
+    debugpy.listen(5678)
+    print("Press play!")
+    debugpy.wait_for_client()
     main()
+

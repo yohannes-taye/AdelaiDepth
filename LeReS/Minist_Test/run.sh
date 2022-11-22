@@ -8,8 +8,8 @@ python ./tools/test_depth.py \
     --create_video \
     --video_name A008_10281102_C023_AdelaiDepth.mp4 \
     --fps 30 \
-    # --debug
-
+    --stich_with_rgb \
+    --debug
 
 
 

@@ -14,7 +14,8 @@ from lib.utils.logging import log_stats
 from lib.utils.logging import SmoothedValue
 from lib.utils.timer import Timer
 import numpy as np
-
+import cv2 
+import os 
 
 class TrainingStats(object):
     """Track vital training statistics."""
@@ -73,12 +74,14 @@ class TrainingStats(object):
         #Reshape depth to (1, H, W)
         depth = np.reshape(depth, (len(depth), 1, depth.shape[1], depth.shape[2]))
 
+        save_path = '/home/tmc/project/AdelaiDepth/LeReS/Train/scripts/output/depth_test/step-' + str(step)
+        if not os.path.exists(save_path):
+            os.makedirs(save_path)
+
+        for i in range(len(depth)):
+            cv2.imwrite(os.path.join(save_path, 'depth_' + str(i) + '.png'), depth[i])
+
         self.tblogger.add_images(f"Depth Inference", depth, step)
-
-        #LALI_DEBUG HERE1
-        # print('Not implemented yet')
-        
-
 
     def tb_log_stats(self, stats, cur_iter):
         """Log the tracked statistics to tensorboard"""
