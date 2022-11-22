@@ -37,6 +37,9 @@ logger = logging.getLogger(__name__)
 #                 break
 #             yield data
 
+
+
+
 def MultipleDataLoaderDistributed(opt, sample_ratio=1):
     opt = opt
     #multi_datasets, dataset_indices_list = create_multiple_dataset(opt)

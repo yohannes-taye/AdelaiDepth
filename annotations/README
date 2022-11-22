@@ -1,0 +1,14 @@
+# taskonomy dataset
+
+train scenes num: 383, val scenes num: 75, test scenes num: 79
+We select images from official splits with 101642, 15223, 17828 images
+
+train: merge official train and val scenes, 116865 images
+val: select 300 images from official test scenes randomly
+test: 17828 images from official test scenes
+
+
+
+depth max: 28015 
+depth min: 51
+

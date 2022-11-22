@@ -1,0 +1,17 @@
+taskonomy
+
+train scenes num: 383, val scenes num: 75, test scenes num: 79
+train_annotations.json: 101642
+train_small_annotations.json: 10600 (for an ablation study experiment)
+
+val_all_annotations.json: 15223
+val_annotations.json: 1000
+
+test_all_annotations.json: 17828
+test_annotations.json: 7061
+
+
+
+depth max: 28015 
+depth min: 51
+
