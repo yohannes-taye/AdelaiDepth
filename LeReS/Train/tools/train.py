@@ -249,6 +249,12 @@ def main():
     # Train args
     train_opt = TrainOptions()
     train_args = train_opt.parse()
+    if train_args.debug: 
+        debugpy.listen(5678)
+        print("Press play!")
+        debugpy.wait_for_client()
+
+    
 
     # Validation args
     val_opt = ValOptions()
@@ -288,8 +294,6 @@ def main():
 
 
 if __name__=='__main__':
-    debugpy.listen(5678)
-    print("Press play!")
-    debugpy.wait_for_client()
+    
     main()
 

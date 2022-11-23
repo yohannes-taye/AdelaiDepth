@@ -17,7 +17,7 @@ def parse_args():
         description='Configs for LeReS')
     parser.add_argument('--load_ckpt', default='./res50.pth', help='Checkpoint path to load')
     parser.add_argument('--backbone', default='resnext101', help='Checkpoint path to load')
-
+    
     args = parser.parse_args()
     return args
 

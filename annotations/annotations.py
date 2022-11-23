@@ -32,8 +32,8 @@ def split_train_val_test_scenes(csv_file):
     val = []
     test = []
     for i, v in enumerate(all_list):
-        if i == 0:
-            continue
+        # if i == 0:
+        #     continue
         if int(v[1]) == 1:
             train.append(v[0].strip())
         elif int(v[2]) == 1:
@@ -42,6 +42,13 @@ def split_train_val_test_scenes(csv_file):
             test.append(v[0].strip())
     print('train scenes num: %d, val scenes num: %d, test scenes num: %d' % (len(train), len(val), len(test)))
     return train, val, test, train+val+test
+
+def get_rgb_pair(path): 
+    path  = path.split('/')
+    path[-1] = path[-1].replace('png', 'jpg')
+    path[-3] = 'rgbs'
+    return '/'.join(path)
+
 
 def create_annotations(csv_file, img_folder, output_folder):
     train_scene, val_scene, test_scene, all_scene = split_train_val_test_scenes(csv_file)
@@ -67,12 +74,19 @@ def create_annotations(csv_file, img_folder, output_folder):
                 anno = {}
                 anno['rgb_path'] = rgb_path
                 anno['depth_path'] = depth_path
-                if d.replace('png', 'jpg') in train_scene:
+                if get_rgb_pair(depth_path) in train_scene:
                     train.append(anno)
-                elif d.replace('png', 'jpg') in val_scene:
+                elif get_rgb_pair(depth_path) in val_scene:
                     val.append(anno)
-                elif d.replace('png', 'jpg') in test_scene:
+                elif get_rgb_pair(depth_path) in test_scene:
                     test.append(anno)
+                
+                # if d.replace('png', 'jpg') in train_scene:
+                #     train.append(anno)
+                # elif d.replace('png', 'jpg') in val_scene:
+                #     val.append(anno)
+                # elif d.replace('png', 'jpg') in test_scene:
+                #     test.append(anno)
                 #else:
                     #print(s, 'not specified')
             else:
@@ -124,12 +138,13 @@ if __name__ == '__main__':
     parse_args.add_argument('--csv_file', type=str, default='cvv.csv')
     parse_args.add_argument('--img_folder', type=str, default='./images')
     parse_args.add_argument('--ouput_folder', type=str, default='./output')
+    parse_args.add_argument('--debug', type=bool, default=False)
     args = parse_args.parse_args()
 
-
-    debugpy.listen(5678)
-    print("Press play!")
-    debugpy.wait_for_client()
+    if args.debug: 
+        debugpy.listen(5678)
+        print("Press play!")
+        debugpy.wait_for_client()
 
     # collect_imgs_num()
 

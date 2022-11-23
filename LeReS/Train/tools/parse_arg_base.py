@@ -32,7 +32,7 @@ class BaseOptions():
         parser.add_argument('--nnodes', type=int, default=1, help='Amount of nodes')
         parser.add_argument('--node_rank', type=int, default=0, help='Rank of current node')
         parser.add_argument('--dist_url', type=str, default='tcp://127.0.0.1:22', help='URL specifying how to initialize the process group')
-
+        parser.add_argument('--debug', action='store_true', help='Debug mode', default=False)
         # parser.add_argument('--optim', default='SGD', help='Select optimizer, SGD or Adam')
         # parser.add_argument('--start_epoch', default=0, type=int, help='Set training epochs')
         # parser.add_argument('--results_dir', type=str, default='./evaluation', help='Output dir')

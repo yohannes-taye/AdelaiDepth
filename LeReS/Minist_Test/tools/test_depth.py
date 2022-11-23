@@ -29,7 +29,7 @@ def parse_args():
     parser.add_argument('--save_folder', default='./data/output_folder', help='Folder path to save')
     parser.add_argument('--debug', action='store_true', help='debug mode', default=False)
     parser.add_argument('--stich_with_rgb', action='store_true', help='debug mode', default=False)
-
+    parser.add_argument('--video_save_path', default='./data/output_folder', help='Folder path to save')    
     parser.add_argument('--trained_ckpt', help='Folder path to checkpoint', default='./res50.pth')
 
     parser = add_create_video_args(parser)
@@ -44,11 +44,14 @@ def create_video(mypath, outputpath, name, fps=30):
 
     for filename in sorted(glob.glob(f'{mypath}/*')):
         img = cv2.imread(filename)
-        height, width, layers = img.shape
+        try:
+            height, width, layers = img.shape
+        except:
+            continue
         size = (width,height)
         img_array.append(img)
 
-    out = cv2.VideoWriter(f'{outputpath}/{name}.mp4',cv2.VideoWriter_fourcc(*'MP4V'), int(fps), size)
+    out = cv2.VideoWriter(f'{outputpath}/{name}',cv2.VideoWriter_fourcc(*'MP4V'), int(fps), size)
     for i in range(len(img_array)):
         out.write(img_array[i])
     out.release()
@@ -115,6 +118,7 @@ if __name__ == '__main__':
     # If debug mode, only process 10 images
     if args.debug:
         imgs_list = imgs_list[:10]
+        # pass 
 
 
     imgs_path = [os.path.join(args.img_folder, i) for i in imgs_list if i != 'outputs']
@@ -135,7 +139,7 @@ if __name__ == '__main__':
         pred_depth = depth_model.inference(img_torch).cpu().numpy().squeeze()
         end = time.time()
         
-        print("FPS: ", 1/(end-start))
+        # print("FPS: ", 1/(end-start))
         pred_depth_ori = cv2.resize(pred_depth, (rgb.shape[1], rgb.shape[0]))
 
         # if GT depth is available, uncomment the following part to recover the metric depth
@@ -168,5 +172,5 @@ if __name__ == '__main__':
         #LALI_DEBUG HERE2``
     
     if args.create_video:
-        create_video(args.save_folder, args.save_folder, args.video_name, args.fps)
+        create_video(args.save_folder, args.video_save_path, args.video_name, args.fps)
         
