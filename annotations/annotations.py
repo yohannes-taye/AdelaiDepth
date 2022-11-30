@@ -43,14 +43,14 @@ def split_train_val_test_scenes(csv_file):
     print('train scenes num: %d, val scenes num: %d, test scenes num: %d' % (len(train), len(val), len(test)))
     return train, val, test, train+val+test
 
-def get_rgb_pair(path): 
+def get_rgb_pair(path, rgb_extention): 
     path  = path.split('/')
-    path[-1] = path[-1].replace('png', 'jpg')
+    path[-1] = path[-1].replace('png', rgb_extention)
     path[-3] = 'rgbs'
     return '/'.join(path)
 
 
-def create_annotations(csv_file, img_folder, output_folder):
+def create_annotations(csv_file, img_folder, output_folder, rgb_extention):
     train_scene, val_scene, test_scene, all_scene = split_train_val_test_scenes(csv_file)
     path = img_folder
     depths_dir = path + '/depths'
@@ -68,17 +68,17 @@ def create_annotations(csv_file, img_folder, output_folder):
         s_i = os.listdir(os.path.join(rgbs_dir, s)) 
         s_d = os.listdir(os.path.join(depths_dir, s))
         for d in s_d:
-            if d.replace('png', 'jpg') in s_i:
+            if d.replace('png', rgb_extention) in s_i:
                 depth_path = os.path.join(f'{img_folder}/depths', s, d)
-                rgb_path = os.path.join(f'{img_folder}/rgbs', s, d.replace('png', 'jpg'))
+                rgb_path = os.path.join(f'{img_folder}/rgbs', s, d.replace('png', rgb_extention))
                 anno = {}
                 anno['rgb_path'] = rgb_path
                 anno['depth_path'] = depth_path
-                if get_rgb_pair(depth_path) in train_scene:
+                if get_rgb_pair(depth_path, rgb_extention) in train_scene:
                     train.append(anno)
-                elif get_rgb_pair(depth_path) in val_scene:
+                elif get_rgb_pair(depth_path, rgb_extention) in val_scene:
                     val.append(anno)
-                elif get_rgb_pair(depth_path) in test_scene:
+                elif get_rgb_pair(depth_path, rgb_extention) in test_scene:
                     test.append(anno)
                 
                 # if d.replace('png', 'jpg') in train_scene:
@@ -138,6 +138,7 @@ if __name__ == '__main__':
     parse_args.add_argument('--csv_file', type=str, default='cvv.csv')
     parse_args.add_argument('--img_folder', type=str, default='./images')
     parse_args.add_argument('--ouput_folder', type=str, default='./output')
+    parse_args.add_argument('--rgb_extention', type=str, default='jpg')
     parse_args.add_argument('--debug', type=bool, default=False)
     args = parse_args.parse_args()
 
@@ -152,7 +153,7 @@ if __name__ == '__main__':
     if not os.path.exists(args.ouput_folder):
         os.makedirs(args.ouput_folder)
 
-    create_annotations(args.csv_file, args.img_folder, args.ouput_folder)
+    create_annotations(args.csv_file, args.img_folder, args.ouput_folder, args.rgb_extention)
     #depth_statistics()
 
 

@@ -6,7 +6,7 @@ export CUDA_VISIBLE_DEVICES=0
 python ../tools/train.py \
     --dataroot datasets \
     --backbone resnet50 \
-    --dataset_list testing  \
+    --dataset_list virtual_scene  \
     --batchsize 16 \
     --base_lr 0.001 \
     --use_tfboard \

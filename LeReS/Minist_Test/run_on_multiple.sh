@@ -1,23 +1,37 @@
-export PYTHONPATH="/home/tmc/project/AdelaiDepth/LeReS/Minist_Test"
+#!/bin/bash 
 
+export PYTHONPATH="/home/tmc/project/AdelaiDepth/LeReS/Minist_Test"
+export CUDA_VISIBLE_DEVICES=0
 
 #Get path to video file
 DEPTH_RESULT_FOLDER=/home/tmc/project/AdelaiDepth/LeReS/Train/scripts/output/depth_test
 # VIDEO_PATH=/home/tmc/Documents/Data/depth_test_data/A011_04010827_C017/480x270
-VIDEO_PATH=/home/tmc/Documents/Data/depth_test_data/A008_10281559_C028
+VIDEO_PATH=/home/tmc/Documents/Data/depth_test_data/A008_10281010_C020
 
+declare -a IGNORE_FOLDERS=("base_line")
 
 
 #Get folders in depth result folder
 for folder in $DEPTH_RESULT_FOLDER/*; do
     #Get folder name
     folder_name=$(basename $folder)
+    
+    #Check if folder is in ignore list
+    if [[ " ${IGNORE_FOLDERS[@]} " =~ " ${folder_name} " ]]; then
+        echo "Ignoring folder: $folder_name"
+        continue
+    fi
+
+    echo "Processing folder: $folder_name"
+    
+    
     #Get the first file in the folder
     ckpt=$(ls "$folder/ckpt" | head -n 1)
     ckpt="$DEPTH_RESULT_FOLDER/$folder_name/ckpt/$ckpt"
     save_folder="$DEPTH_RESULT_FOLDER/$folder_name/depth"
     video_save_path="$DEPTH_RESULT_FOLDER/$folder_name"
 
+    
 
     echo "Save folder: $save_folder"
     echo "Ckpt: $ckpt"

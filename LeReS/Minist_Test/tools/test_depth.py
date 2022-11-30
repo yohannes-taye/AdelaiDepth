@@ -127,19 +127,25 @@ if __name__ == '__main__':
     for i, v in enumerate(imgs_path):
         print('processing (%04d)-th image... %s' % (i, v))
         rgb = cv2.imread(v)
+        print("Input shape: ", rgb.shape)
         rgb_c = rgb[:, :, ::-1].copy()
         gt_depth = None
+        #Get time for resizing
+        start = time.time()
+        
+
         A_resize = cv2.resize(rgb_c, (448, 448))
         rgb_half = cv2.resize(rgb, (rgb.shape[1]//2, rgb.shape[0]//2), interpolation=cv2.INTER_LINEAR)
 
         img_torch = scale_torch(A_resize)[None, :, :, :]
+        end  = time.time()
+        print("Resize time: ", end - start)
         
         start = time.time()
     
         pred_depth = depth_model.inference(img_torch).cpu().numpy().squeeze()
         end = time.time()
-        
-        # print("FPS: ", 1/(end-start))
+        print("FPS: ", 1/(end-start))
         pred_depth_ori = cv2.resize(pred_depth, (rgb.shape[1], rgb.shape[0]))
 
         # if GT depth is available, uncomment the following part to recover the metric depth

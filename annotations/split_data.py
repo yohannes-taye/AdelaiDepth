@@ -17,21 +17,31 @@ def split(data_folder):
             #Join path to folder
             path = os.path.join(data_folder, folder)
             img_list =  os.listdir(path)
-
+            img_size = len(img_list)
             # Move 70% of images to train randomly
-            while len(train) < 0.7*len(img_list):
+            train_size = 0
+            while train_size < 0.7 * img_size:
                 img = np.random.choice(img_list)
                 train.append(os.path.join(path, img))
                 img_list.remove(img) 
-            
+                train_size = train_size + 1
             # Move 70% of images to val randomly
-            while len(val) < 0.7*len(img_list):
+            img_size = img_size - train_size
+            val_size = 0
+            while val_size < 0.7 * img_size:
                 img = np.random.choice(img_list)
                 val.append(os.path.join(path, img))
                 img_list.remove(img)
+                val_size = val_size + 1
             
             for img in img_list:
                 test.append(os.path.join(path, img))
+    print("Train size: ", len(train))
+    print("Val size: ", len(val))
+    print("Test size: ", len(test))
+    print("Total size: ", len(train) + len(val) + len(test))
+
+
     return train, val, test
 
 
@@ -45,7 +55,7 @@ def export_csv(output_folder, train, val, test):
             f.write(img + ',0,1,0\n')
         for img in test:
             f.write(img + ',0,0,1\n')
-    print("Exported to csv at: ", os.path.join(args.output_folder, 'annotations.csv'))
+    print("Exported to csv at: ", os.path.join(output_folder, 'annotations.csv'))
 
 
 
