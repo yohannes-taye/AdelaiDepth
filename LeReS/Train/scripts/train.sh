@@ -16,8 +16,11 @@ python ../tools/train.py \
     --lr_scheduler_multiepochs 10 25 40 \
     --val_step 5000 \
     --snapshot_iters 100 \
-    --log_interval 1 \
+    --log_interval 100 \
     --load_ckpt /home/tmc/project/AdelaiDepth/LeReS/Minist_Test/res50.pth \
+    # --resume \
+    
+    # --load_ckpt /home/tmc/project/AdelaiDepth/LeReS/Minist_Test/res50.pth \
 
 
 # python ../tools/train.py \

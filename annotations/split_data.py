@@ -48,6 +48,7 @@ def split(data_folder):
 #Function to export train val and test to csv file in the following format
 #image_name, 1 if image_name in train, 1 if image_name in val, 1 image_name if in test
 def export_csv(output_folder, train, val, test):
+    
     with open(os.path.join(output_folder, 'annotations.csv'), 'w') as f:
         for img in train:
             f.write(img + ',1,0,0\n')

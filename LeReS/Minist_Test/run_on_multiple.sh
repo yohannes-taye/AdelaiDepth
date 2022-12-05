@@ -6,10 +6,13 @@ export CUDA_VISIBLE_DEVICES=0
 #Get path to video file
 DEPTH_RESULT_FOLDER=/home/tmc/project/AdelaiDepth/LeReS/Train/scripts/output/depth_test
 # VIDEO_PATH=/home/tmc/Documents/Data/depth_test_data/A011_04010827_C017/480x270
-VIDEO_PATH=/home/tmc/Documents/Data/depth_test_data/A008_10281010_C020
+# VIDEO_PATH=/home/tmc/Documents/depth_test_data/real_life
+VIDEO_PATH=/home/tmc/project/AdelaiDepth/LeReS/Train/scripts/output/depth_test/rgb/depth
 
-declare -a IGNORE_FOLDERS=("base_line")
+declare -a IGNORE_FOLDERS=("rgb" "DPT" "base_line" "stage2" "stage3-noise2" "stage2-noise"   "stage3-noise")
 
+########## 
+############
 
 #Get folders in depth result folder
 for folder in $DEPTH_RESULT_FOLDER/*; do
@@ -48,9 +51,9 @@ for folder in $DEPTH_RESULT_FOLDER/*; do
         --img_folder $VIDEO_PATH \
         --save_folder $save_folder \
         --video_save_path $video_save_path \
-        --create_video \
-        --video_name video.mp4 \
-        --fps 30 \
-        --stich_with_rgb \
+        # --create_video \
+        # --video_name video.mp4 \
+        # --fps 30 \
+        # --stich_with_rgb \
      
 done

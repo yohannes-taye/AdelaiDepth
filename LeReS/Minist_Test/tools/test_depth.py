@@ -172,9 +172,11 @@ if __name__ == '__main__':
 
             #Stich horizontally with rgb image
             depth = np.concatenate((rgb, depth), axis=1)
-            cv2.imwrite(os.path.join(args.save_folder, img_name[:-4]+'.png'), depth)
+            img_name = img_name.split('.')[0]
+            cv2.imwrite(os.path.join(args.save_folder, img_name + '.png'), depth)
         else:   
-            cv2.imwrite(os.path.join(args.save_folder, img_name[:-4]+'.png'), depth_img.astype(np.uint16))
+            img_name = img_name.split('.')[0]
+            cv2.imwrite(os.path.join(args.save_folder, img_name + '.png'), depth_img.astype(np.uint16))
         #LALI_DEBUG HERE2``
     
     if args.create_video:
